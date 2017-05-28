@@ -22,6 +22,7 @@ namespace GottaniRPG
         [System.Runtime.InteropServices.DllImport("winmm.dll")]
         private static extern int mciSendString(String command, StringBuilder buffer, int bufferSize, IntPtr hwndCallback);
         private string aliasName = "MediaFile";
+        private int key;
 
         public Form1(SoundPlayer soundPlayer)
         {
@@ -47,6 +48,12 @@ namespace GottaniRPG
             button2.Click += new EventHandler(button2_Click);
             button2.Dock = DockStyle.Fill;
             button2.Parent = tlp;
+
+            Button button3 = new Button();
+            button3.Text = "画面モード変更";
+            button3.Click += new EventHandler(button3_Click);
+            button3.Dock = DockStyle.Fill;
+            button3.Parent = tlp;
 
             textBox1 = new TextBox();
             textBox1.Parent = tlp;
@@ -82,5 +89,27 @@ namespace GottaniRPG
             cmd = "close " + aliasName;
             mciSendString(cmd, null, 0, IntPtr.Zero);
         }
+
+        private void button3_Click(object sender, System.EventArgs e)
+        {
+           
+            switch (key)
+            {
+                case 0:
+                    {
+                        this.FormBorderStyle = FormBorderStyle.None;
+                        this.WindowState = FormWindowState.Maximized;//window->Full
+                        key = 1;
+                        break;
+                    }//case 0 end
+                case 1:
+                    {
+                        this.FormBorderStyle = FormBorderStyle.Sizable;
+                        this.WindowState = FormWindowState.Normal;//Full->window
+                        key = 0;
+                        break;
+                    }//case 1 end
+            }//switch end
+        }//btn_click end
     }
 }
