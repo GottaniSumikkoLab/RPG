@@ -7,3 +7,12 @@ C:\Users\AYoshimasa\Documents\Visual Studio 2017\Projects\RPG\GottaniRPG\bin\Deb
 C:\Users\AYoshimasa\Documents\Visual Studio 2017\Projects\RPG\GottaniRPG\obj\Debug\GottaniRPG.exe
 C:\Users\AYoshimasa\Documents\Visual Studio 2017\Projects\RPG\GottaniRPG\obj\Debug\GottaniRPG.pdb
 C:\Users\AYoshimasa\Documents\Visual Studio 2017\Projects\RPG\GottaniRPG\obj\Debug\GottaniRPG.Form1.resources
+C:\RPG\GottaniRPG\bin\Debug\GottaniRPG.exe.config
+C:\RPG\GottaniRPG\obj\Debug\GottaniRPG.exe
+C:\RPG\GottaniRPG\obj\Debug\GottaniRPG.pdb
+C:\RPG\GottaniRPG\bin\Debug\GottaniRPG.exe
+C:\RPG\GottaniRPG\bin\Debug\GottaniRPG.pdb
+C:\RPG\GottaniRPG\obj\Debug\GottaniRPG.csprojResolveAssemblyReference.cache
+C:\RPG\GottaniRPG\obj\Debug\GottaniRPG.Form1.resources
+C:\RPG\GottaniRPG\obj\Debug\GottaniRPG.Properties.Resources.resources
+C:\RPG\GottaniRPG\obj\Debug\GottaniRPG.csproj.GenerateResource.Cache
