@@ -64,6 +64,10 @@ namespace GottaniRPG
             cmd = "open \"" + fileName + "\" type mpegvideo alias " + aliasName;
             if (mciSendString(cmd, null, 0, IntPtr.Zero) != 0)
                 return;
+
+            // 音量を小さくする
+            mciSendString("setaudio " + aliasName + " volume to 100", null, 0, IntPtr.Zero);
+
             //再生する
             cmd = "play " + aliasName;
             mciSendString(cmd, null, 0, IntPtr.Zero);
