@@ -6,3 +6,4 @@ C:\Users\AYoshimasa\Documents\Visual Studio 2017\Projects\RPG\GottaniRPG\bin\Deb
 C:\Users\AYoshimasa\Documents\Visual Studio 2017\Projects\RPG\GottaniRPG\bin\Debug\GottaniRPG.pdb
 C:\Users\AYoshimasa\Documents\Visual Studio 2017\Projects\RPG\GottaniRPG\obj\Debug\GottaniRPG.exe
 C:\Users\AYoshimasa\Documents\Visual Studio 2017\Projects\RPG\GottaniRPG\obj\Debug\GottaniRPG.pdb
+C:\Users\AYoshimasa\Documents\Visual Studio 2017\Projects\RPG\GottaniRPG\obj\Debug\GottaniRPG.Form1.resources

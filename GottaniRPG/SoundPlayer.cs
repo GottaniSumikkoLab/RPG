@@ -12,30 +12,36 @@ namespace GottaniRPG
         private static extern int mciSendString(string lpszCommand, StringBuilder lpszReturnString, int cchReturn, IntPtr hwndCallback);
 
         [DllImport("winmm.dll", EntryPoint = "mciGetDeviceIDW", CharSet = CharSet.Unicode)]
-        private static extern uint mciGetDeviceID(string lpstrName);
+        private static extern int mciGetDeviceID(string lpstrName);
 
         public event Action<int> PlayEnd;
 
-        IntPtr handle = IntPtr.Zero;
+        Control parent = null;
         SoundPlayerWindow win = null;
 
         public SoundPlayer() { }
 
         public void Init(Control parent)
         {
-            handle = parent.Handle;
+            this.parent = parent;
             win = new SoundPlayerWindow();
-            win.AssignHandle(handle);
+            win.AssignHandle(parent.Handle);
             win.PlayEnd += id => PlayEnd?.Invoke(id);
         }
 
         public int GetDeviceID(string name)
         {
-            return (int)mciGetDeviceID(name);
+            var result = 0;
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciGetDeviceID(name);
+            }));
+            return result;
         }
 
         public int Open(string file, string name)
         {
+            var result = 0;
             var cmd = "";
             switch (Path.GetExtension(file))
             {
@@ -53,7 +59,12 @@ namespace GottaniRPG
                     break;
             }
 
-            if (0 > mciSendString(cmd, null, 0, handle))
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciSendString(cmd, null, 0, parent.Handle);
+            }));
+
+            if (0 > result)
                 return -1;
 
             return GetDeviceID(name);
@@ -61,57 +72,101 @@ namespace GottaniRPG
 
         public int Play(string name)
         {
+            var result = 0;
             var cmd = $"play {name} notify";
-            return mciSendString(cmd, null, 0, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciSendString(cmd, null, 0, parent.Handle);
+            }));
+            return result;
         }
 
         public int Play(string name, string from, string to)
         {
+            var result = 0;
             var cmd = $"play {name} from {from} to {to} notify";
-            return mciSendString(cmd, null, 0, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciSendString(cmd, null, 0, parent.Handle);
+            }));
+            return result;
         }
 
         public int Stop(string name)
         {
+            var result = 0;
             var cmd = $"stop {name}";
-            return mciSendString(cmd, null, 0, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciSendString(cmd, null, 0, parent.Handle);
+            }));
+            return result;
         }
 
         public int Close(string name)
         {
+            var result = 0;
             var cmd = $"close {name}";
-            return mciSendString(cmd, null, 0, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciSendString(cmd, null, 0, parent.Handle);
+            }));
+            return result;
         }
 
         public int CloseAll()
         {
+            var result = 0;
             var cmd = $"close all";
-            return mciSendString(cmd, null, 0, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciSendString(cmd, null, 0, parent.Handle);
+            }));
+            return result;
         }
 
         public int Pause(string name)
         {
+            var result = 0;
             var cmd = $"pause {name}";
-            return mciSendString(cmd, null, 0, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciSendString(cmd, null, 0, parent.Handle);
+            }));
+            return result;
         }
 
         public int Resume(string name)
         {
+            var result = 0;
             var cmd = $"resume {name}";
-            return mciSendString(cmd, null, 0, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciSendString(cmd, null, 0, parent.Handle);
+            }));
+            return result;
         }
 
         public int Seek(string name, string pos)
         {
+            var result = 0;
             var cmd = $"seek {name} to {pos}";
-            return mciSendString(cmd, null, 0, handle);
+
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciSendString(cmd, null, 0, parent.Handle);
+            }));
+            return result;
         }
 
         public string Status(string name)
         {
             var sb = new StringBuilder(100);
             var cmd = $"status {name} mode";
-            mciSendString(cmd, sb, sb.Capacity, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                mciSendString(cmd, sb, sb.Capacity, parent.Handle);
+            }));
             return sb.ToString();
         }
 
@@ -119,7 +174,10 @@ namespace GottaniRPG
         {
             var sb = new StringBuilder(100);
             var cmd = $"status {name} position";
-            mciSendString(cmd, sb, sb.Capacity, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                mciSendString(cmd, sb, sb.Capacity, parent.Handle);
+            }));
             return sb.ToString();
         }
 
@@ -127,21 +185,32 @@ namespace GottaniRPG
         {
             var sb = new StringBuilder(100);
             var cmd = $"status {name} time format";
-            mciSendString(cmd, sb, sb.Capacity, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                mciSendString(cmd, sb, sb.Capacity, parent.Handle);
+            }));
             return sb.ToString();
         }
 
         public int SetTimeFormat(string name, string format)
         {
+            var result = 0;
             var cmd = $"set {name} time format {format}";
-            return mciSendString(cmd, null, 0, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                result = mciSendString(cmd, null, 0, parent.Handle);
+            }));
+            return result;
         }
 
         public string Length(string name)
         {
             var sb = new StringBuilder(100);
             var cmd = $"status {name} length";
-            mciSendString(cmd, sb, sb.Capacity, handle);
+            parent.Invoke((MethodInvoker)(() =>
+            {
+                mciSendString(cmd, sb, sb.Capacity, parent.Handle);
+            }));
             return sb.ToString();
         }
 
