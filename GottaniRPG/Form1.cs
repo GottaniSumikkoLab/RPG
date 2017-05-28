@@ -19,6 +19,7 @@ namespace GottaniRPG
         private TextBox textBox1;
         private TableLayoutPanel tlp;
         private Label lb;
+        private PictureBox pb;
         [System.Runtime.InteropServices.DllImport("winmm.dll")]
         private static extern int mciSendString(String command, StringBuilder buffer, int bufferSize, IntPtr hwndCallback);
         private string aliasName = "MediaFile";
@@ -58,7 +59,16 @@ namespace GottaniRPG
             textBox1 = new TextBox();
             textBox1.Parent = tlp;
 
-            tlp.Parent = this;
+            tlp.BackColor = Color.Transparent;
+            pb = new PictureBox();
+            tlp.Parent = pb;
+
+            
+            pb.ImageLocation = "background_001.jpg";
+            pb.Dock = DockStyle.Fill;
+            pb.Parent = this;
+
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
