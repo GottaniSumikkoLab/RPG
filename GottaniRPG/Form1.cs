@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
 namespace GottaniRPG
 {
     public partial class Form1 : Form
@@ -24,10 +23,13 @@ namespace GottaniRPG
 
         public Form1()
         {
+            SystemData.LoadFile();
             this.Width = 640;//windowsize x
             this.Height = 480;//windowsize y
             this.StartPosition = FormStartPosition.CenterScreen;//画面中央表示
             this.BackColor = Color.FromArgb(255, 255, 255);//背景色
+
+            Paint += new PaintEventHandler(MyHandler);
 
             tlp = new TableLayoutPanel();
             tlp.Dock = DockStyle.Fill;
@@ -48,16 +50,24 @@ namespace GottaniRPG
 
             tlp.BackColor = Color.Transparent;
             pb = new PictureBox();
-            tlp.Parent = pb;
+            tlp.Parent = this;
 
 
-            pb.ImageLocation = "background_001.jpg";
-            pb.Dock = DockStyle.Fill;
-            pb.Parent = this;
+            //// pb.ImageLocation = "background_001.jpg";
+            //pb.Dock = DockStyle.Fill;
+            //pb.Parent = this;
 
 
         }
+        private void MyHandler(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            for (int i = 0; i < SystemData.Dungeon_A_Arr.Length; i++)
+            {
+                g.DrawImage(SystemData.Dungeon_A_Arr[i], new PointF(100f * i, 0));
+            }
 
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             //再生するファイル名
