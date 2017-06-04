@@ -9,10 +9,17 @@ namespace GottaniRPG
 {
     public static class SystemData
     {
-        List<Bitmap> bmp = new List<Bitmap>();
+        public const string Tilesets = "tilesets/";
+        public const string Dungeon_A = "Dungeon_A";
+        public const string Png = ".png";
+        public static Bitmap[] Dungeon_A_Arr = new Bitmap[2];
+
         public static void LoadFile()
         {
-
+            for (int i = 0; i < Dungeon_A_Arr.Length; i++)
+            {
+                Dungeon_A_Arr[i] = new Bitmap(Tilesets + Dungeon_A + (i+1) + Png);
+            }
         }
     }
 }
