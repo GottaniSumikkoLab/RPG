@@ -37,23 +37,11 @@ namespace GottaniRPG
             lb = new Label();
             lb.Parent = tlp;
 
-            Button button1 = new Button();
-            button1.Text = "サウンド再生";
-            button1.Click += new EventHandler(button1_Click);
-            button1.Dock = DockStyle.Fill;
-            button1.Parent = tlp;
+            Button button1 = new MyButton("サウンド再生", DockStyle.Fill, new EventHandler(button1_Click), tlp);
 
-            Button button2 = new Button();
-            button2.Text = "サウンド停止";
-            button2.Click += new EventHandler(button2_Click);
-            button2.Dock = DockStyle.Fill;
-            button2.Parent = tlp;
+            Button button2 = new MyButton("サウンド停止", DockStyle.Fill, new EventHandler(button2_Click), tlp);
 
-            Button button3 = new Button();
-            button3.Text = "画面モード変更";
-            button3.Click += new EventHandler(button3_Click);
-            button3.Dock = DockStyle.Fill;
-            button3.Parent = tlp;
+            Button button3 = new MyButton("画面モード変更", DockStyle.Fill, new EventHandler(button3_Click), tlp);
 
             textBox1 = new TextBox();
             textBox1.Parent = tlp;
@@ -62,12 +50,12 @@ namespace GottaniRPG
             pb = new PictureBox();
             tlp.Parent = pb;
 
-            
+
             pb.ImageLocation = "background_001.jpg";
             pb.Dock = DockStyle.Fill;
             pb.Parent = this;
 
-            
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -101,7 +89,7 @@ namespace GottaniRPG
 
         private void button3_Click(object sender, System.EventArgs e)
         {
-           
+
             switch (key)
             {
                 case 0:
@@ -120,5 +108,15 @@ namespace GottaniRPG
                     }//case 1 end
             }//switch end
         }//btn_click end
+    }
+
+    public class MyButton : Button{
+        public MyButton(string text, DockStyle dockStyle, EventHandler eventHandler, Control parent)
+        {
+            this.Text = text;
+            this.Dock = dockStyle;
+            this.Click += eventHandler;
+            this.Parent = parent;
+        }
     }
 }
