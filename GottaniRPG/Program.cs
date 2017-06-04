@@ -16,11 +16,7 @@ namespace GottaniRPG
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            SoundPlayer soundPlayer = new SoundPlayer();
-            Form1 form = new Form1(soundPlayer);
-            soundPlayer.Init(form);
-            
-            Application.Run(form);
+            Application.Run(new Form1());
         }
     }
 }

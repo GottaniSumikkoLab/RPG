@@ -13,9 +13,6 @@ namespace GottaniRPG
 {
     public partial class Form1 : Form
     {
-        
-        private SoundPlayer soundPlayer;
-        Dictionary<int, string> nameList = new Dictionary<int, string>();
         private TextBox textBox1;
         private TableLayoutPanel tlp;
         private Label lb;
@@ -25,11 +22,8 @@ namespace GottaniRPG
         private string aliasName = "MediaFile";
         private int key;
 
-        public Form1(SoundPlayer soundPlayer)
+        public Form1()
         {
-            this.soundPlayer = soundPlayer;
-            InitializeComponent();
-
             tlp = new TableLayoutPanel();
             tlp.Dock = DockStyle.Fill;
             tlp.ColumnCount = 1;
