@@ -66,7 +66,6 @@ namespace GottaniRPG
             {
                 g.DrawImage(SystemData.Dungeon_A_Arr[i], new PointF(100f * i, 0));
             }
-
         }
         private void button1_Click(object sender, EventArgs e)
         {
