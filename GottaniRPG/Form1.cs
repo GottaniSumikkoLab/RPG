@@ -25,7 +25,7 @@ namespace GottaniRPG
         public Form1()
         {
             this.Width = 640;//windowsize x
-            this.Height = 200;//windowsize y
+            this.Height = 480;//windowsize y
             this.StartPosition = FormStartPosition.CenterScreen;//画面中央表示
             this.BackColor = Color.FromArgb(255, 255, 255);//背景色
             tlp = new TableLayoutPanel();
