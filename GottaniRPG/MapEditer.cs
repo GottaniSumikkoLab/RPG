@@ -166,6 +166,10 @@ namespace GottaniRPG
             {
                pb_arr[i].Image = MapEditSystemData.pic_data[MapIndex % 31].mapChipArray[i];
             }
+            for (int j = pb_arr.Length-1; j >= MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; j--)
+            {
+                pb_arr[j].Image = null;
+            }
         }
         private void Right_button(object sender, EventArgs e)
         {
@@ -174,6 +178,10 @@ namespace GottaniRPG
             for (int i = 0; i < MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; i++)
             {
                 pb_arr[i].Image = MapEditSystemData.pic_data[MapIndex % 31].mapChipArray[i];
+            }
+            for (int j = pb_arr.Length-1; j >= MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; j--)
+            {
+                pb_arr[j].Image = null;
             }
         }
     }
