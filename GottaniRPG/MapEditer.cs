@@ -14,8 +14,9 @@ namespace GottaniRPG
     {
         public MapEditer()
         {
-            this.Width = 640;//windowsize x
-            this.Height = 480;//windowsize y
+            this.Width = 1280;//windowsize x
+            this.Height = 720;//windowsize y
+            this.Text = "MapEditer";
             this.StartPosition = FormStartPosition.CenterScreen;//画面中央表示
             this.BackColor = Color.FromArgb(0, 0, 0);//背景色
         }
