@@ -19,18 +19,34 @@ namespace GottaniRPG
         private TableLayoutPanel Page;
         private TableLayoutPanel MapChip;
 
+        private Label mapName;
+        private PictureBox[] pb_arr = new PictureBox[256];
+
+        private int MapIndex = 0;
+
         public MapEditer()
         {
             MapEditSystemData.LoadFile();
+
+            Form_init();
+
+            Paint += new PaintEventHandler(MyHandler);
+
+            CreateUI();
+            
+        }
+
+        private void Form_init()
+        {
             this.Width = 1280;//windowsize x
             this.Height = 720;//windowsize y
             this.Text = "MapEditer";
             this.StartPosition = FormStartPosition.CenterScreen;//画面中央表示
             this.BackColor = Color.FromArgb(255, 255, 255);//背景色
+        }
 
-            Paint += new PaintEventHandler(MyHandler);
-            Paint += new PaintEventHandler(GridLine);
-
+        private void CreateUI()
+        {
             Edit_or_UI = new TableLayoutPanel();
             Edit_or_UI.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
             Edit_or_UI.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 80);
@@ -42,10 +58,11 @@ namespace GottaniRPG
             Edit_or_UI.RowCount = 1;
 
             Edit = new TableLayoutPanel();
-            Edit.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
             Edit.Dock = DockStyle.Fill;
             Edit.ColumnCount = 22;
-            Edit.RowCount = 15; 
+            Edit.RowCount = 15;
+            Edit.BackColor = Color.FromArgb(0,0,0);
+            Edit.Paint += new PaintEventHandler(GridLine);
 
             UI = new TableLayoutPanel();
             UI.RowStyles.Add(new RowStyle(SizeType.Percent));
@@ -71,8 +88,11 @@ namespace GottaniRPG
             MapName.ColumnCount = 3;
             MapName.RowCount = 1;
             Button MapName_left = new Button();
-            Label mapName = new Label();
+            MapName_left.Click += new EventHandler(Left_button);
+            mapName = new Label();
+            mapName.Text = MapEditSystemData.pic_data[0].name;
             Button MapName_right = new Button();
+            MapName_right.Click += new EventHandler(Right_button);
             MapName_left.Parent = MapName;
             mapName.Parent = MapName;
             MapName_right.Parent = MapName;
@@ -96,10 +116,34 @@ namespace GottaniRPG
             Page_right.Parent = Page;
 
             MapChip = new TableLayoutPanel();
-            MapChip.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
+            MapChip.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
+            MapChip.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
+            MapChip.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
+            MapChip.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
+            MapChip.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 25);
+            MapChip.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 25);
+            MapChip.ColumnStyles[2] = new ColumnStyle(SizeType.Percent, 25);
+            MapChip.ColumnStyles[3] = new ColumnStyle(SizeType.Percent, 25);
+            for (int i = 0; i < 11; i++)
+            {
+                MapChip.RowStyles.Add(new RowStyle(SizeType.Percent));
+                MapChip.RowStyles[i] = new RowStyle(SizeType.Percent, 8.3f);
+            }
+
             MapChip.Dock = DockStyle.Fill;
             MapChip.ColumnCount = 4;
-            MapChip.RowCount = 12;
+            MapChip.RowCount = 11;
+            MapChip.BackColor = Color.FromArgb(160, 160, 160);
+
+            for (int i = 0; i < pb_arr.Length; i++)
+            {
+                pb_arr[i] = new PictureBox();
+            }
+            for (int i = 0; i < 44; i++)
+            {
+                pb_arr[i].Image = MapEditSystemData.pic_data[0].mapChipArray[i];
+                pb_arr[i].Parent = MapChip;
+            }
 
             MapName.Parent = UI;
             Page.Parent = UI;
@@ -107,9 +151,7 @@ namespace GottaniRPG
             Edit.Parent = Edit_or_UI;
             UI.Parent = Edit_or_UI;
             Edit_or_UI.Parent = this;
-            
         }
-
         private void MyHandler(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -132,6 +174,25 @@ namespace GottaniRPG
             for (int i = 0; i < this.Width / 48; i++)
             {
                 verticalline.DrawLine(new Pen(Color.White), i * 48, 0, i * 48, this.Height);
+            }
+        }
+        private void Left_button(object sender, EventArgs e)
+        {
+            MapIndex--;
+            if (MapIndex < 0) MapIndex += 31;
+            mapName.Text = MapEditSystemData.pic_data[MapIndex % 31].name;
+            for (int i = 0; i < MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; i++)
+            {
+               pb_arr[i].Image = MapEditSystemData.pic_data[MapIndex % 31].mapChipArray[i];
+            }
+        }
+        private void Right_button(object sender, EventArgs e)
+        {
+            MapIndex++;
+            mapName.Text = MapEditSystemData.pic_data[MapIndex % 31].name;
+            for (int i = 0; i < MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; i++)
+            {
+                pb_arr[i].Image = MapEditSystemData.pic_data[MapIndex % 31].mapChipArray[i];
             }
         }
     }

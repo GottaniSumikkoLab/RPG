@@ -11,7 +11,7 @@ namespace GottaniRPG
     {
         private int pic_size_x = 48;
         private int pic_size_y = 48;
-        private string name;
+        public string name;
         public Bitmap[] mapChipArray;
         public Map(int x, int y, string name)
         {
