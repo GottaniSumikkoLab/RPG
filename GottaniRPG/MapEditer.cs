@@ -67,10 +67,8 @@ namespace GottaniRPG
             UI = new TableLayoutPanel();
             UI.RowStyles.Add(new RowStyle(SizeType.Percent));
             UI.RowStyles.Add(new RowStyle(SizeType.Percent));
-            UI.RowStyles.Add(new RowStyle(SizeType.Percent));
             UI.RowStyles[0] = new RowStyle(SizeType.Percent, 6);
-            UI.RowStyles[1] = new RowStyle(SizeType.Percent, 6);
-            UI.RowStyles[2] = new RowStyle(SizeType.Percent, 88);
+            UI.RowStyles[1] = new RowStyle(SizeType.Percent, 94);
             UI.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
             UI.Dock = DockStyle.Fill;
             UI.ColumnCount = 1;
@@ -97,24 +95,6 @@ namespace GottaniRPG
             mapName.Parent = MapName;
             MapName_right.Parent = MapName;
 
-            Page = new TableLayoutPanel();
-            Page.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            Page.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            Page.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            Page.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 20);
-            Page.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 60);
-            Page.ColumnStyles[2] = new ColumnStyle(SizeType.Percent, 20);
-            Page.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
-            Page.Dock = DockStyle.Fill;
-            Page.ColumnCount = 3;
-            Page.RowCount = 1;
-            Button Page_left = new Button();
-            Label page = new Label();
-            Button Page_right = new Button();
-            Page_left.Parent = Page;
-            page.Parent = Page;
-            Page_right.Parent = Page;
-
             MapChip = new TableLayoutPanel();
             MapChip.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
             MapChip.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
@@ -124,29 +104,30 @@ namespace GottaniRPG
             MapChip.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 25);
             MapChip.ColumnStyles[2] = new ColumnStyle(SizeType.Percent, 25);
             MapChip.ColumnStyles[3] = new ColumnStyle(SizeType.Percent, 25);
-            for (int i = 0; i < 11; i++)
-            {
-                MapChip.RowStyles.Add(new RowStyle(SizeType.Percent));
-                MapChip.RowStyles[i] = new RowStyle(SizeType.Percent, 8.3f);
-            }
+
+            //for (int i = 0; i < 11; i++)
+            //{
+            //    MapChip.RowStyles.Add(new RowStyle(SizeType.Percent));
+            //    MapChip.RowStyles[i] = new RowStyle(SizeType.Percent, 8.3f);
+            //}
 
             MapChip.Dock = DockStyle.Fill;
             MapChip.ColumnCount = 4;
             MapChip.RowCount = 11;
             MapChip.BackColor = Color.FromArgb(160, 160, 160);
+            MapChip.AutoScroll = true;
 
             for (int i = 0; i < pb_arr.Length; i++)
             {
                 pb_arr[i] = new PictureBox();
             }
-            for (int i = 0; i < 44; i++)
+            for (int i = 0; i < MapEditSystemData.pic_data[0].mapChipArray.Length; i++)
             {
                 pb_arr[i].Image = MapEditSystemData.pic_data[0].mapChipArray[i];
                 pb_arr[i].Parent = MapChip;
             }
 
             MapName.Parent = UI;
-            Page.Parent = UI;
             MapChip.Parent = UI;
             Edit.Parent = Edit_or_UI;
             UI.Parent = Edit_or_UI;
