@@ -48,10 +48,7 @@ namespace GottaniRPG
         private void CreateUI()
         {
             Edit_or_UI = new TableLayoutPanel();
-            Edit_or_UI.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            Edit_or_UI.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 80);
-            Edit_or_UI.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            Edit_or_UI.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 20);
+            AddColumnStyles(Edit_or_UI, 2, new int[] { 80, 20});
             Edit_or_UI.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
             Edit_or_UI.Dock = DockStyle.Fill;
             Edit_or_UI.ColumnCount = 2;
@@ -65,22 +62,14 @@ namespace GottaniRPG
             Edit.Paint += new PaintEventHandler(GridLine);
 
             UI = new TableLayoutPanel();
-            UI.RowStyles.Add(new RowStyle(SizeType.Percent));
-            UI.RowStyles.Add(new RowStyle(SizeType.Percent));
-            UI.RowStyles[0] = new RowStyle(SizeType.Percent, 6);
-            UI.RowStyles[1] = new RowStyle(SizeType.Percent, 94);
+            AddRowStyles(UI, 2, new int[] { 6, 94});
             UI.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
             UI.Dock = DockStyle.Fill;
             UI.ColumnCount = 1;
             UI.RowCount = 3;
 
             MapName = new TableLayoutPanel();
-            MapName.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            MapName.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            MapName.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            MapName.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 20);
-            MapName.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 60);
-            MapName.ColumnStyles[2] = new ColumnStyle(SizeType.Percent, 20);
+            AddColumnStyles(MapName, 3, new int[] { 20, 60, 20});
             MapName.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
             MapName.Dock = DockStyle.Fill;
             MapName.ColumnCount = 3;
@@ -96,20 +85,7 @@ namespace GottaniRPG
             MapName_right.Parent = MapName;
 
             MapChip = new TableLayoutPanel();
-            MapChip.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            MapChip.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            MapChip.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            MapChip.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
-            MapChip.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 25);
-            MapChip.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 25);
-            MapChip.ColumnStyles[2] = new ColumnStyle(SizeType.Percent, 25);
-            MapChip.ColumnStyles[3] = new ColumnStyle(SizeType.Percent, 25);
-
-            //for (int i = 0; i < 11; i++)
-            //{
-            //    MapChip.RowStyles.Add(new RowStyle(SizeType.Percent));
-            //    MapChip.RowStyles[i] = new RowStyle(SizeType.Percent, 8.3f);
-            //}
+            AddColumnStyles(MapChip, 4, new int[] { 25, 25, 25, 25});
 
             MapChip.Dock = DockStyle.Fill;
             MapChip.ColumnCount = 4;
@@ -132,6 +108,23 @@ namespace GottaniRPG
             Edit.Parent = Edit_or_UI;
             UI.Parent = Edit_or_UI;
             Edit_or_UI.Parent = this;
+        }
+        private void AddColumnStyles(TableLayoutPanel tlp, int num, int[] per)
+        {
+            for (int i = 0; i < num; i++)
+            {
+                tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
+                tlp.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, per[i]);
+            }
+        }
+
+        private void AddRowStyles(TableLayoutPanel tlp, int num,int[] per)
+        {
+            for (int i = 0; i < num; i++)
+            {
+                tlp.RowStyles.Add(new RowStyle(SizeType.Percent));
+                tlp.RowStyles[i] = new RowStyle(SizeType.Percent, per[i]);
+            }
         }
         private void MyHandler(object sender, PaintEventArgs e)
         {
