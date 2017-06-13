@@ -24,6 +24,8 @@ namespace GottaniRPG
 
         private int MapIndex = 0;
 
+        private MenuStrip menustrip;
+
         public MapEditer()
         {
             MapEditSystemData.LoadFile();
@@ -111,6 +113,36 @@ namespace GottaniRPG
             Edit_or_UI.Parent = this;
             this.ResumeLayout();
         }
+
+        private void MenuBar(object sender,EventArgs e)
+        {
+            this.menustrip = new MenuStrip();
+
+            this.SuspendLayout();
+            this.menustrip.SuspendLayout();
+
+            ToolStripMenuItem filemenuitem = new ToolStripMenuItem();
+            filemenuitem.Text = "ファイル(&F)";
+            filemenuitem.ShortcutKeys = Keys.Control | Keys.F;
+            filemenuitem.ShowShortcutKeys = true;
+            this.menustrip.Items.Add(filemenuitem);
+
+            ToolStripMenuItem exitmenuitem = new ToolStripMenuItem();
+            exitmenuitem.Text = "終了(&X)";
+            exitmenuitem.ShortcutKeys = Keys.Control | Keys.X;
+            exitmenuitem.ShowShortcutKeys = true;
+            this.menustrip.Items.Add(filemenuitem);
+
+
+            this.Controls.Add(this.menustrip);
+            this.MainMenuStrip = this.menustrip;
+            this.menustrip.ResumeLayout(false);
+            this.menustrip.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
         private void AddColumnStyles(TableLayoutPanel tlp, int num, int[] per)
         {
             this.SuspendLayout();
