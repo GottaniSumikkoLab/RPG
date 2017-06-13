@@ -131,8 +131,8 @@ namespace GottaniRPG
             exitmenuitem.Text = "終了(&X)";
             exitmenuitem.ShortcutKeys = Keys.Control | Keys.X;
             exitmenuitem.ShowShortcutKeys = true;
-            this.menustrip.Items.Add(filemenuitem);
-
+            this.menustrip.Items.Add(exitmenuitem);
+        
 
             this.Controls.Add(this.menustrip);
             this.MainMenuStrip = this.menustrip;
