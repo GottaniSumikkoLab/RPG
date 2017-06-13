@@ -47,6 +47,7 @@ namespace GottaniRPG
 
         private void CreateUI()
         {
+            this.SuspendLayout();
             Edit_or_UI = new TableLayoutPanel();
             AddColumnStyles(Edit_or_UI, 2, new int[] { 80, 20});
             Edit_or_UI.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
@@ -108,23 +109,28 @@ namespace GottaniRPG
             Edit.Parent = Edit_or_UI;
             UI.Parent = Edit_or_UI;
             Edit_or_UI.Parent = this;
+            this.ResumeLayout();
         }
         private void AddColumnStyles(TableLayoutPanel tlp, int num, int[] per)
         {
+            this.SuspendLayout();
             for (int i = 0; i < num; i++)
             {
                 tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
                 tlp.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, per[i]);
             }
+            this.ResumeLayout();
         }
 
         private void AddRowStyles(TableLayoutPanel tlp, int num,int[] per)
         {
+            this.SuspendLayout();
             for (int i = 0; i < num; i++)
             {
                 tlp.RowStyles.Add(new RowStyle(SizeType.Percent));
                 tlp.RowStyles[i] = new RowStyle(SizeType.Percent, per[i]);
             }
+            this.ResumeLayout();
         }
         private void MyHandler(object sender, PaintEventArgs e)
         {
