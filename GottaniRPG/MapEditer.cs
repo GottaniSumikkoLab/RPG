@@ -16,7 +16,6 @@ namespace GottaniRPG
         private TableLayoutPanel Edit;
         private TableLayoutPanel UI;
         private TableLayoutPanel MapName;
-        private TableLayoutPanel Page;
         private TableLayoutPanel MapChip;
 
         private Label mapName;
@@ -32,8 +31,9 @@ namespace GottaniRPG
 
             Form_init();
 
+            Load += new EventHandler(MenuBar);
             Paint += new PaintEventHandler(MyHandler);
-
+          
             CreateUI();
             
         }
@@ -127,13 +127,24 @@ namespace GottaniRPG
             filemenuitem.ShowShortcutKeys = true;
             this.menustrip.Items.Add(filemenuitem);
 
+            ToolStripMenuItem openmenuitem = new ToolStripMenuItem();
+            openmenuitem.Text = "開く(&O)";
+            openmenuitem.ShortcutKeys = Keys.Control | Keys.O;
+            openmenuitem.ShowShortcutKeys = true;
+            filemenuitem.DropDownItems.Add(openmenuitem);
+
+            ToolStripMenuItem savemenuitem = new ToolStripMenuItem();
+            savemenuitem.Text = "名前を付けて保存(&N)";
+            savemenuitem.ShortcutKeys = Keys.Control | Keys.N;
+            savemenuitem.ShowShortcutKeys = true;
+            filemenuitem.DropDownItems.Add(savemenuitem);
+
             ToolStripMenuItem exitmenuitem = new ToolStripMenuItem();
             exitmenuitem.Text = "終了(&X)";
             exitmenuitem.ShortcutKeys = Keys.Control | Keys.X;
             exitmenuitem.ShowShortcutKeys = true;
-            this.menustrip.Items.Add(exitmenuitem);
+            filemenuitem.DropDownItems.Add(exitmenuitem);
         
-
             this.Controls.Add(this.menustrip);
             this.MainMenuStrip = this.menustrip;
             this.menustrip.ResumeLayout(false);
