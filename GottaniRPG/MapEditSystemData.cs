@@ -46,6 +46,7 @@ namespace GottaniRPG
             pic_data[28] = new Map(16, 12, "World_A2");
             pic_data[29] = new Map(16, 16, "World_B");
             pic_data[30] = new Map(16, 16, "World_C");
+
         }
     }
 }
