@@ -16,13 +16,15 @@ namespace GottaniRPG
         private TableLayoutPanel Edit;
         private TableLayoutPanel UI;
         private TableLayoutPanel MapName;
-        private TableLayoutPanel Page;
         private TableLayoutPanel MapChip;
 
         private Label mapName;
+
         private PictureBox[] pb_arr = new PictureBox[256];
 
         private int MapIndex = 0;
+
+        private MenuStrip menustrip;
 
         public MapEditer()
         {
@@ -30,8 +32,9 @@ namespace GottaniRPG
 
             Form_init();
 
+            Load += new EventHandler(MenuBar);
             Paint += new PaintEventHandler(MyHandler);
-
+          
             CreateUI();
             
         }
@@ -47,6 +50,7 @@ namespace GottaniRPG
 
         private void CreateUI()
         {
+            this.SuspendLayout();
             Edit_or_UI = new TableLayoutPanel();
             AddColumnStyles(Edit_or_UI, 2, new int[] { 80, 20});
             Edit_or_UI.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
@@ -108,23 +112,69 @@ namespace GottaniRPG
             Edit.Parent = Edit_or_UI;
             UI.Parent = Edit_or_UI;
             Edit_or_UI.Parent = this;
+            this.ResumeLayout();
         }
+
+        private void MenuBar(object sender,EventArgs e)
+        {
+            this.menustrip = new MenuStrip();
+
+            this.SuspendLayout();
+            this.menustrip.SuspendLayout();
+
+            ToolStripMenuItem filemenuitem = new ToolStripMenuItem();
+            filemenuitem.Text = "ファイル(&F)";
+            filemenuitem.ShortcutKeys = Keys.Control | Keys.F;
+            filemenuitem.ShowShortcutKeys = true;
+            this.menustrip.Items.Add(filemenuitem);
+
+            ToolStripMenuItem openmenuitem = new ToolStripMenuItem();
+            openmenuitem.Text = "開く(&O)";
+            openmenuitem.ShortcutKeys = Keys.Control | Keys.O;
+            openmenuitem.ShowShortcutKeys = true;
+            filemenuitem.DropDownItems.Add(openmenuitem);
+
+            ToolStripMenuItem savemenuitem = new ToolStripMenuItem();
+            savemenuitem.Text = "名前を付けて保存(&N)";
+            savemenuitem.ShortcutKeys = Keys.Control | Keys.N;
+            savemenuitem.ShowShortcutKeys = true;
+            filemenuitem.DropDownItems.Add(savemenuitem);
+
+            ToolStripMenuItem exitmenuitem = new ToolStripMenuItem();
+            exitmenuitem.Text = "終了(&X)";
+            exitmenuitem.ShortcutKeys = Keys.Control | Keys.X;
+            exitmenuitem.ShowShortcutKeys = true;
+            filemenuitem.DropDownItems.Add(exitmenuitem);
+        
+            this.Controls.Add(this.menustrip);
+            this.MainMenuStrip = this.menustrip;
+            this.menustrip.ResumeLayout(false);
+            this.menustrip.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
         private void AddColumnStyles(TableLayoutPanel tlp, int num, int[] per)
         {
+            this.SuspendLayout();
             for (int i = 0; i < num; i++)
             {
                 tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent));
                 tlp.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, per[i]);
             }
+            this.ResumeLayout();
         }
 
         private void AddRowStyles(TableLayoutPanel tlp, int num,int[] per)
         {
+            this.SuspendLayout();
             for (int i = 0; i < num; i++)
             {
                 tlp.RowStyles.Add(new RowStyle(SizeType.Percent));
                 tlp.RowStyles[i] = new RowStyle(SizeType.Percent, per[i]);
             }
+            this.ResumeLayout();
         }
         private void MyHandler(object sender, PaintEventArgs e)
         {

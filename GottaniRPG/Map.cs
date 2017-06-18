@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace GottaniRPG
 {
@@ -17,7 +18,9 @@ namespace GottaniRPG
         {
             this.name = name;
             int sum = x * y;
+
             Bitmap large_map = new Bitmap("tilesets/" + name + ".png");
+
             mapChipArray = new Bitmap[sum];
 
             for (int i = 0; i < sum; i++)
