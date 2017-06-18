@@ -86,10 +86,8 @@ namespace GottaniRPG
 
             MapChip = new TableLayoutPanel();
             AddColumnStyles(MapChip, 4, new int[] { 25, 25, 25, 25});
-
             MapChip.Dock = DockStyle.Fill;
             MapChip.ColumnCount = 4;
-            MapChip.RowCount = 11;
             MapChip.BackColor = Color.FromArgb(160, 160, 160);
             MapChip.AutoScroll = true;
 
@@ -101,6 +99,8 @@ namespace GottaniRPG
             {
                 pb_arr[i].Image = MapEditSystemData.pic_data[0].mapChipArray[i];
                 pb_arr[i].Parent = MapChip;
+                Console.WriteLine(MapEditSystemData.pic_data[0].mapChipArray[i].Size);
+                Console.WriteLine(pb_arr[i].Size);
             }
 
             MapName.Parent = UI;
