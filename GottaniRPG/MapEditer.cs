@@ -19,6 +19,7 @@ namespace GottaniRPG
         private TableLayoutPanel MapChip;
 
         private Label mapName;
+
         private PictureBox[] pb_arr = new PictureBox[256];
 
         private int MapIndex = 0;
