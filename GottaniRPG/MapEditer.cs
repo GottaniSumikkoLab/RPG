@@ -16,7 +16,7 @@ namespace GottaniRPG
         private TableLayoutPanel Edit;
         private TableLayoutPanel UI;
         private TableLayoutPanel MapName;
-        private TableLayoutPanel MapChip;
+        private Panel MapChip;
 
         private Label mapName;
 
@@ -26,6 +26,8 @@ namespace GottaniRPG
 
         private MenuStrip menustrip;
 
+        private Bitmap SelectedMapChip;
+
         public MapEditer()
         {
             MapEditSystemData.LoadFile();
@@ -33,7 +35,6 @@ namespace GottaniRPG
             Form_init();
 
             Load += new EventHandler(MenuBar);
-            Paint += new PaintEventHandler(MyHandler);
           
             CreateUI();
             
@@ -88,24 +89,12 @@ namespace GottaniRPG
             mapName.Parent = MapName;
             MapName_right.Parent = MapName;
 
-            MapChip = new TableLayoutPanel();
-            AddColumnStyles(MapChip, 4, new int[] { 25, 25, 25, 25});
+            MapChip = new Panel();
             MapChip.Dock = DockStyle.Fill;
-            MapChip.ColumnCount = 4;
             MapChip.BackColor = Color.FromArgb(160, 160, 160);
             MapChip.AutoScroll = true;
-
-            for (int i = 0; i < pb_arr.Length; i++)
-            {
-                pb_arr[i] = new PictureBox();
-            }
-            for (int i = 0; i < MapEditSystemData.pic_data[0].mapChipArray.Length; i++)
-            {
-                pb_arr[i].Image = MapEditSystemData.pic_data[0].mapChipArray[i];
-                pb_arr[i].Parent = MapChip;
-                Console.WriteLine(MapEditSystemData.pic_data[0].mapChipArray[i].Size);
-                Console.WriteLine(pb_arr[i].Size);
-            }
+            MapChip.MouseClick += new MouseEventHandler(mouseClick);
+            MapChip.Paint += new PaintEventHandler(PaintMapChip);
 
             MapName.Parent = UI;
             MapChip.Parent = UI;
@@ -176,13 +165,17 @@ namespace GottaniRPG
             }
             this.ResumeLayout();
         }
-        private void MyHandler(object sender, PaintEventArgs e)
+
+        private void PaintMapChip(object sender, PaintEventArgs e)
         {
+            e.Graphics.TranslateTransform(MapChip.AutoScrollPosition.X, MapChip.AutoScrollPosition.Y);
             Graphics g = e.Graphics;
-            for (int i = 0; i < MapEditSystemData.pic_data[1].mapChipArray.Length; i++)
+            for (int i = 0; i < MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; i++)
             {
-                g.DrawImage(MapEditSystemData.pic_data[1].mapChipArray[i], new PointF(48f * i, 0));
+                g.DrawImage(MapEditSystemData.pic_data[MapIndex % 31].mapChipArray[i], new PointF(3 + (54f * (i % 4)), 3 + (54f * (i / 4))));
             }
+            int rows = MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Count(n => n != null) / 4;
+            MapChip.AutoScrollMinSize = new Size(MapChip.Width, 54 * rows + 3);
         }
 
         private void GridLine(object sender, PaintEventArgs e)
@@ -200,32 +193,37 @@ namespace GottaniRPG
                 verticalline.DrawLine(new Pen(Color.White), i * 48, 0, i * 48, this.Height);
             }
         }
+
         private void Left_button(object sender, EventArgs e)
         {
             MapIndex--;
             if (MapIndex < 0) MapIndex += 31;
             mapName.Text = MapEditSystemData.pic_data[MapIndex % 31].name;
-            for (int i = 0; i < MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; i++)
-            {
-               pb_arr[i].Image = MapEditSystemData.pic_data[MapIndex % 31].mapChipArray[i];
-            }
-            for (int j = pb_arr.Length-1; j >= MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; j--)
-            {
-                pb_arr[j].Image = null;
-            }
+            MapChip.Refresh();
         }
+
         private void Right_button(object sender, EventArgs e)
         {
             MapIndex++;
             mapName.Text = MapEditSystemData.pic_data[MapIndex % 31].name;
-            for (int i = 0; i < MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; i++)
-            {
-                pb_arr[i].Image = MapEditSystemData.pic_data[MapIndex % 31].mapChipArray[i];
-            }
-            for (int j = pb_arr.Length-1; j >= MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; j--)
-            {
-                pb_arr[j].Image = null;
-            }
+            MapChip.Refresh();
+        }
+
+        public Point ScreenToGrid_MapChipPanel(Point pos)
+        {
+            Point ret = new Point();
+            ret.X = pos.X / 54;
+            ret.Y = pos.Y / 54;
+            return ret;
+        }
+
+        void mouseClick(object sender, MouseEventArgs e)
+        {
+            Point sum = new Point();
+            sum.X = MapChip.PointToClient(Cursor.Position).X - MapChip.AutoScrollPosition.X;
+            sum.Y = MapChip.PointToClient(Cursor.Position).Y - MapChip.AutoScrollPosition.Y;
+            sum = ScreenToGrid_MapChipPanel(sum);
+            SelectedMapChip = MapEditSystemData.pic_data[MapIndex % 31].mapChipArray[4 * sum.X + sum.Y];
         }
     }
 }
