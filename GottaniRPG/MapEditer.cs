@@ -32,13 +32,18 @@ namespace GottaniRPG
         public int MapSizeY = 0;
 
         public Bitmap EditMap = new Bitmap(300, 300);
+        public int[,] EditMapArray;
+
+        private bool EditMapMoveFlag;
+        private Point FormerMousePos = new Point(0, 0);
+        private Point EditMapWorldPos = new Point(0, 0);
 
         public MapEditer()
         {
             MESysData.LoadFile();
 
             Form_init();
-
+            this.DoubleBuffered = true;
             Load += new EventHandler(MenuBar);
           
             CreateUI();
@@ -68,6 +73,10 @@ namespace GottaniRPG
             Edit.Dock = DockStyle.Fill;
             Edit.BackColor = Color.FromArgb(0,0,0);
             Edit.Paint += new PaintEventHandler(DrawMap);
+            Edit.MouseDown += new MouseEventHandler(EditMap_MouseDown);
+            Edit.MouseMove += new MouseEventHandler(EditMap_MouseMove);
+            Edit.MouseUp += new MouseEventHandler(EditMap_MouseUp);
+            
 
             UI = new TableLayoutPanel();
             AddRowStyles(UI, 2, new int[] { 6, 94});
@@ -97,7 +106,7 @@ namespace GottaniRPG
             MapChip.BackColor = Color.FromArgb(160, 160, 160);
             MapChip.AutoScroll = true;
             MapChip.MouseClick += new MouseEventHandler(mouseClick);
-            MapChip.Paint += new PaintEventHandler(PaintMapChip);
+            MapChip.Paint += new PaintEventHandler(PaintMapChipList);
 
             TilesName.Parent = UI;
             MapChip.Parent = UI;
@@ -167,6 +176,7 @@ namespace GottaniRPG
                     MapSizeX = s;
                     MapSizeY = t;
 
+                    EditMapArray = new int[MapSizeX, MapSizeY];
                     EditMap = new Bitmap(MapSizeX * MESysData.MapChipSize, MapSizeY * MESysData.MapChipSize);
                     GridLine(EditMap);
                     Edit.Invalidate();
@@ -228,7 +238,7 @@ namespace GottaniRPG
             this.ResumeLayout();
         }
 
-        private void PaintMapChip(object sender, PaintEventArgs e)
+        private void PaintMapChipList(object sender, PaintEventArgs e)
         {
             e.Graphics.TranslateTransform(MapChip.AutoScrollPosition.X, MapChip.AutoScrollPosition.Y);
             Graphics g = e.Graphics;
@@ -243,7 +253,9 @@ namespace GottaniRPG
         private void DrawMap(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            g.DrawImage(EditMap,new Point(0,0));
+            Rectangle srcRect = new Rectangle(EditMapWorldPos.X, EditMapWorldPos.Y, Edit.Size.Width, Edit.Size.Height);
+            Rectangle desRect = new Rectangle(0, 0, srcRect.Width, srcRect.Height);
+            g.DrawImage(EditMap, desRect, srcRect, GraphicsUnit.Pixel);
         }
 
         private void GridLine(Bitmap img)
@@ -251,14 +263,14 @@ namespace GottaniRPG
             Graphics verticalline = Graphics.FromImage(img);
             Graphics horizonalline = Graphics.FromImage(img);
 
-            for(int j = 0; j < this.Height / MESysData.MapChipSize; j++)
+            for(int j = 0; j < img.Height / MESysData.MapChipSize; j++)
             {
-                horizonalline.DrawLine(new Pen(Color.White), 0, j* MESysData.MapChipSize, this.Width, j* MESysData.MapChipSize);
+                horizonalline.DrawLine(new Pen(Color.White), 0, j* MESysData.MapChipSize, img.Width, j* MESysData.MapChipSize);
             }
 
-            for (int i = 0; i < this.Width / MESysData.MapChipSize; i++)
+            for (int i = 0; i < img.Width / MESysData.MapChipSize; i++)
             {
-                verticalline.DrawLine(new Pen(Color.White), i * MESysData.MapChipSize, 0, i * MESysData.MapChipSize, this.Height);
+                verticalline.DrawLine(new Pen(Color.White), i * MESysData.MapChipSize, 0, i * MESysData.MapChipSize, img.Height);
             }
         }
 
@@ -293,5 +305,33 @@ namespace GottaniRPG
             sum = ScreenToGrid_MapChipPanel(sum);
             SelectedMapChip = MESysData.pic_data[TilesIndex % 31].mapChipArray[4 * sum.X + sum.Y];
         }
+
+        private void EditMap_MouseDown(object sender, MouseEventArgs e)
+        {
+            EditMapMoveFlag = true;
+
+            FormerMousePos = Cursor.Position;
+        }
+
+        private void EditMap_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (EditMapMoveFlag)
+            {
+                EditMapWorldPos.X -= e.X - FormerMousePos.X;
+                EditMapWorldPos.Y -= e.Y - FormerMousePos.Y;
+                EditMapWorldPos.X = Utils.Clamp<int>(EditMapWorldPos.X, 0, EditMap.Size.Width - Edit.Size.Width);
+                EditMapWorldPos.Y = Utils.Clamp<int>(EditMapWorldPos.Y, 0, EditMap.Size.Height - Edit.Size.Height);
+                Edit.Refresh();
+                FormerMousePos.X = e.X;
+                FormerMousePos.Y = e.Y;
+            }
+        }
+
+        private void EditMap_MouseUp(object sender, MouseEventArgs e)
+        {
+            EditMapMoveFlag = false;
+        }
+
+        
     }
 }
