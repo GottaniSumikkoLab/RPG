@@ -46,9 +46,11 @@ namespace GottaniRPG
         }
         public MapChipData[,] EditMapArray;
 
-        private bool EditMapMoveFlag;
+        private bool EditMapMoveFlag = false;
+        private bool MouseMoveFlag = false;
         private Point FormerMousePos = new Point(0, 0);
         private Point EditMapWorldPos = new Point(0, 0);
+
 
         public MapEditer()
         {
@@ -88,7 +90,6 @@ namespace GottaniRPG
             Edit.MouseDown += new MouseEventHandler(EditMap_MouseDown);
             Edit.MouseMove += new MouseEventHandler(EditMap_MouseMove);
             Edit.MouseUp += new MouseEventHandler(EditMap_MouseUp);
-            Edit.MouseClick += new MouseEventHandler(EditMap_MouseClick);
             
 
             UI = new TableLayoutPanel();
@@ -338,9 +339,19 @@ namespace GottaniRPG
 
         private void EditMap_MouseDown(object sender, MouseEventArgs e)
         {
-            EditMapMoveFlag = true;
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    EditMapMoveFlag = true;
+                    break;
+                case MouseButtons.Right:
+                    MouseMoveFlag = true;
+                    DrawMapChip();
+                    break;
+            }
 
             FormerMousePos = Edit.PointToClient(Cursor.Position);
+            
         }
 
         private void EditMap_MouseMove(object sender, MouseEventArgs e)
@@ -355,21 +366,28 @@ namespace GottaniRPG
                 FormerMousePos.X = e.X;
                 FormerMousePos.Y = e.Y;
             }
+
+            if (MouseMoveFlag)
+            {
+                DrawMapChip();
+            }
+
         }
 
         private void EditMap_MouseUp(object sender, MouseEventArgs e)
         {
             EditMapMoveFlag = false;
+            MouseMoveFlag = false;
         }
 
-        private void EditMap_MouseClick(object sender, MouseEventArgs e)
+        private void DrawMapChip()
         {
             Point tmp = new Point();
             tmp.X = EditMapWorldPos.X + Edit.PointToClient(Cursor.Position).X;
             tmp.Y = EditMapWorldPos.Y + Edit.PointToClient(Cursor.Position).Y;
             tmp = ScreenToGrid_EditMap(tmp);
             Graphics g = Graphics.FromImage(EditMap);
-            g.DrawImage(selectedMapChip.MapChip, tmp.X*MESysData.MapChipSize, tmp.Y*MESysData.MapChipSize);
+            g.DrawImage(selectedMapChip.MapChip, tmp.X * MESysData.MapChipSize, tmp.Y * MESysData.MapChipSize);
             Edit.Refresh();
             g.Dispose();
 
