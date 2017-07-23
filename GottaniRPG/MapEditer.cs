@@ -32,7 +32,19 @@ namespace GottaniRPG
         public int MapSizeY = 0;
 
         public Bitmap EditMap = new Bitmap(300, 300);
-        public int[,] EditMapArray;
+
+        public struct MapChipData
+        {
+            public string tileset_name;
+            public int mapChip_index;
+
+            public MapChipData(string x, int y)
+            {
+                tileset_name = x;
+                mapChip_index = y;
+            }
+        }
+        public MapChipData[,] EditMapArray;
 
         private bool EditMapMoveFlag;
         private Point FormerMousePos = new Point(0, 0);
@@ -43,7 +55,7 @@ namespace GottaniRPG
             MESysData.LoadFile();
 
             Form_init();
-            this.DoubleBuffered = true;
+
             Load += new EventHandler(MenuBar);
           
             CreateUI();
@@ -69,13 +81,14 @@ namespace GottaniRPG
             Edit_or_UI.ColumnCount = 2;
             Edit_or_UI.RowCount = 1;
 
-            Edit = new Panel();
+            Edit = new EditPanel();
             Edit.Dock = DockStyle.Fill;
             Edit.BackColor = Color.FromArgb(0,0,0);
             Edit.Paint += new PaintEventHandler(DrawMap);
             Edit.MouseDown += new MouseEventHandler(EditMap_MouseDown);
             Edit.MouseMove += new MouseEventHandler(EditMap_MouseMove);
             Edit.MouseUp += new MouseEventHandler(EditMap_MouseUp);
+            Edit.MouseClick += new MouseEventHandler(EditMap_MouseClick);
             
 
             UI = new TableLayoutPanel();
@@ -92,11 +105,11 @@ namespace GottaniRPG
             TilesName.ColumnCount = 3;
             TilesName.RowCount = 1;
             Button TilesName_left = new Button();
-            TilesName_left.Click += new EventHandler(MapChipList_Left_button);
+            TilesName_left.Click += new EventHandler(Left_button);
             tilesName = new Label();
             tilesName.Text = MESysData.pic_data[0].name;
             Button TilesName_right = new Button();
-            TilesName_right.Click += new EventHandler(MapChipList_Right_button);
+            TilesName_right.Click += new EventHandler(Right_button);
             TilesName_left.Parent = TilesName;
             tilesName.Parent = TilesName;
             TilesName_right.Parent = TilesName;
@@ -105,7 +118,7 @@ namespace GottaniRPG
             MapChip.Dock = DockStyle.Fill;
             MapChip.BackColor = Color.FromArgb(160, 160, 160);
             MapChip.AutoScroll = true;
-            MapChip.MouseClick += new MouseEventHandler(MapChipList_mouseClick);
+            MapChip.MouseClick += new MouseEventHandler(mouseClick);
             MapChip.Paint += new PaintEventHandler(PaintMapChipList);
 
             TilesName.Parent = UI;
@@ -176,7 +189,14 @@ namespace GottaniRPG
                     MapSizeX = s;
                     MapSizeY = t;
 
-                    EditMapArray = new int[MapSizeX, MapSizeY];
+                    for(int i = 0; i < MapSizeX; i++)
+                    {
+                        for(int j = 0; j < MapSizeY; j++)
+                        {
+                            EditMapArray[i, j] = new MapChipData("",-1);
+                        }
+                    }
+                    
                     EditMap = new Bitmap(MapSizeX * MESysData.MapChipSize, MapSizeY * MESysData.MapChipSize);
                     GridLine(EditMap);
                     Edit.Invalidate();
@@ -274,7 +294,7 @@ namespace GottaniRPG
             }
         }
 
-        private void MapChipList_Left_button(object sender, EventArgs e)
+        private void Left_button(object sender, EventArgs e)
         {
             TilesIndex--;
             if (TilesIndex < 0) TilesIndex += 31;
@@ -282,7 +302,7 @@ namespace GottaniRPG
             MapChip.Refresh();
         }
 
-        private void MapChipList_Right_button(object sender, EventArgs e)
+        private void Right_button(object sender, EventArgs e)
         {
             TilesIndex++;
             tilesName.Text = MESysData.pic_data[TilesIndex % 31].name;
@@ -297,20 +317,28 @@ namespace GottaniRPG
             return ret;
         }
 
-        void MapChipList_mouseClick(object sender, MouseEventArgs e)
+        public Point ScreenToGrid_EditMap(Point pos)
+        {
+            Point ret = new Point();
+            ret.X = pos.X / MESysData.MapChipSize;
+            ret.Y = pos.Y / MESysData.MapChipSize;
+            return ret;
+        }
+
+        void mouseClick(object sender, MouseEventArgs e)
         {
             Point sum = new Point();
             sum.X = MapChip.PointToClient(Cursor.Position).X - MapChip.AutoScrollPosition.X;
             sum.Y = MapChip.PointToClient(Cursor.Position).Y - MapChip.AutoScrollPosition.Y;
             sum = ScreenToGrid_MapChipPanel(sum);
-            SelectedMapChip = MESysData.pic_data[TilesIndex % 31].mapChipArray[4 * sum.X + sum.Y];
+            SelectedMapChip = MESysData.pic_data[TilesIndex % 31].mapChipArray[sum.X + 4 * sum.Y];
         }
 
         private void EditMap_MouseDown(object sender, MouseEventArgs e)
         {
             EditMapMoveFlag = true;
 
-            FormerMousePos = Cursor.Position;
+            FormerMousePos = Edit.PointToClient(Cursor.Position);
         }
 
         private void EditMap_MouseMove(object sender, MouseEventArgs e)
@@ -332,6 +360,18 @@ namespace GottaniRPG
             EditMapMoveFlag = false;
         }
 
-        
+        private void EditMap_MouseClick(object sender, MouseEventArgs e)
+        {
+            Point tmp = new Point();
+            tmp.X = EditMapWorldPos.X + Edit.PointToClient(Cursor.Position).X;
+            tmp.Y = EditMapWorldPos.Y + Edit.PointToClient(Cursor.Position).Y;
+            tmp = ScreenToGrid_EditMap(tmp);
+            Graphics g = Graphics.FromImage(EditMap);
+            g.DrawImage(SelectedMapChip, tmp.X*MESysData.MapChipSize, tmp.Y*MESysData.MapChipSize);
+            Edit.Refresh();
+            g.Dispose();
+
+            EditMapArray[tmp.X, tmp.Y] = 
+        }
     }
 }
