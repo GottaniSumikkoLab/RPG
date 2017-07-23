@@ -7,9 +7,10 @@ using System.Drawing;
 
 namespace GottaniRPG
 {
-    class MapEditSystemData
+    class MESysData
     {
         public const int pic_num = 31;
+        public const int MapChipSize = 48;
 
         public static Map[] pic_data = new Map[pic_num];
 

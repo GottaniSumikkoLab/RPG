@@ -13,24 +13,29 @@ namespace GottaniRPG
     public partial class MapEditer : Form
     {
         private TableLayoutPanel Edit_or_UI;
-        private TableLayoutPanel Edit;
+        private Panel Edit;
         private TableLayoutPanel UI;
-        private TableLayoutPanel MapName;
+        private TableLayoutPanel TilesName;
         private Panel MapChip;
 
-        private Label mapName;
+        private Label tilesName;
 
         private PictureBox[] pb_arr = new PictureBox[256];
 
-        private int MapIndex = 0;
+        private int TilesIndex = 0;
 
         private MenuStrip menustrip;
 
         private Bitmap SelectedMapChip;
 
+        public int MapSizeX = 0;
+        public int MapSizeY = 0;
+
+        public Bitmap EditMap = new Bitmap(300, 300);
+
         public MapEditer()
         {
-            MapEditSystemData.LoadFile();
+            MESysData.LoadFile();
 
             Form_init();
 
@@ -59,12 +64,10 @@ namespace GottaniRPG
             Edit_or_UI.ColumnCount = 2;
             Edit_or_UI.RowCount = 1;
 
-            Edit = new TableLayoutPanel();
+            Edit = new Panel();
             Edit.Dock = DockStyle.Fill;
-            Edit.ColumnCount = 22;
-            Edit.RowCount = 15;
             Edit.BackColor = Color.FromArgb(0,0,0);
-            Edit.Paint += new PaintEventHandler(GridLine);
+            Edit.Paint += new PaintEventHandler(DrawMap);
 
             UI = new TableLayoutPanel();
             AddRowStyles(UI, 2, new int[] { 6, 94});
@@ -73,21 +76,21 @@ namespace GottaniRPG
             UI.ColumnCount = 1;
             UI.RowCount = 3;
 
-            MapName = new TableLayoutPanel();
-            AddColumnStyles(MapName, 3, new int[] { 20, 60, 20});
-            MapName.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
-            MapName.Dock = DockStyle.Fill;
-            MapName.ColumnCount = 3;
-            MapName.RowCount = 1;
-            Button MapName_left = new Button();
-            MapName_left.Click += new EventHandler(Left_button);
-            mapName = new Label();
-            mapName.Text = MapEditSystemData.pic_data[0].name;
-            Button MapName_right = new Button();
-            MapName_right.Click += new EventHandler(Right_button);
-            MapName_left.Parent = MapName;
-            mapName.Parent = MapName;
-            MapName_right.Parent = MapName;
+            TilesName = new TableLayoutPanel();
+            AddColumnStyles(TilesName, 3, new int[] { 20, 60, 20});
+            TilesName.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
+            TilesName.Dock = DockStyle.Fill;
+            TilesName.ColumnCount = 3;
+            TilesName.RowCount = 1;
+            Button TilesName_left = new Button();
+            TilesName_left.Click += new EventHandler(Left_button);
+            tilesName = new Label();
+            tilesName.Text = MESysData.pic_data[0].name;
+            Button TilesName_right = new Button();
+            TilesName_right.Click += new EventHandler(Right_button);
+            TilesName_left.Parent = TilesName;
+            tilesName.Parent = TilesName;
+            TilesName_right.Parent = TilesName;
 
             MapChip = new Panel();
             MapChip.Dock = DockStyle.Fill;
@@ -96,7 +99,7 @@ namespace GottaniRPG
             MapChip.MouseClick += new MouseEventHandler(mouseClick);
             MapChip.Paint += new PaintEventHandler(PaintMapChip);
 
-            MapName.Parent = UI;
+            TilesName.Parent = UI;
             MapChip.Parent = UI;
             Edit.Parent = Edit_or_UI;
             UI.Parent = Edit_or_UI;
@@ -116,6 +119,13 @@ namespace GottaniRPG
             filemenuitem.ShortcutKeys = Keys.Control | Keys.F;
             filemenuitem.ShowShortcutKeys = true;
             this.menustrip.Items.Add(filemenuitem);
+
+            ToolStripMenuItem CreateMapitem = new ToolStripMenuItem();
+            CreateMapitem.Text = "新規作成(&C)";
+            CreateMapitem.ShortcutKeys = Keys.Control | Keys.C;
+            CreateMapitem.ShowShortcutKeys = true;
+            CreateMapitem.Click += new EventHandler(CreateMapToolStripMenuItem_Click);
+            filemenuitem.DropDownItems.Add(CreateMapitem);
 
             ToolStripMenuItem openmenuitem = new ToolStripMenuItem();
             openmenuitem.Text = "開く(&O)";
@@ -144,6 +154,30 @@ namespace GottaniRPG
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void CreateMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateMapDialog f = new CreateMapDialog();
+            if (f.ShowDialog(this) == DialogResult.OK) {
+                if (int.TryParse(f.tate.Text,out int s) && int.TryParse(f.yoko.Text, out int t))
+                {
+                    MapSizeX = s;
+                    MapSizeY = t;
+
+                    EditMap = new Bitmap(MapSizeX * MESysData.MapChipSize, MapSizeY * MESysData.MapChipSize);
+                    GridLine(EditMap);
+                    Edit.Invalidate();
+                }
+                else
+                {
+                    MessageBox.Show("正しい値を入力してください。",
+                                    "エラー",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                }
+            }
+            f.Dispose();
         }
 
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
@@ -196,42 +230,48 @@ namespace GottaniRPG
         {
             e.Graphics.TranslateTransform(MapChip.AutoScrollPosition.X, MapChip.AutoScrollPosition.Y);
             Graphics g = e.Graphics;
-            for (int i = 0; i < MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Length; i++)
+            for (int i = 0; i < MESysData.pic_data[TilesIndex % 31].mapChipArray.Length; i++)
             {
-                g.DrawImage(MapEditSystemData.pic_data[MapIndex % 31].mapChipArray[i], new PointF(3 + (54f * (i % 4)), 3 + (54f * (i / 4))));
+                g.DrawImage(MESysData.pic_data[TilesIndex % 31].mapChipArray[i], new PointF(3 + (54f * (i % 4)), 3 + (54f * (i / 4))));
             }
-            int rows = MapEditSystemData.pic_data[MapIndex % 31].mapChipArray.Count(n => n != null) / 4;
+            int rows = MESysData.pic_data[TilesIndex % 31].mapChipArray.Count(n => n != null) / 4;
             MapChip.AutoScrollMinSize = new Size(MapChip.Width, 54 * rows + 3);
         }
 
-        private void GridLine(object sender, PaintEventArgs e)
+        private void DrawMap(object sender, PaintEventArgs e)
         {
-            Graphics verticalline = e.Graphics;
-            Graphics horizonalline = e.Graphics;
+            Graphics g = e.Graphics;
+            g.DrawImage(EditMap,new Point(0,0));
+        }
 
-            for(int j = 0; j < this.Height / 48; j++)
+        private void GridLine(Bitmap img)
+        {
+            Graphics verticalline = Graphics.FromImage(img);
+            Graphics horizonalline = Graphics.FromImage(img);
+
+            for(int j = 0; j < this.Height / MESysData.MapChipSize; j++)
             {
-                horizonalline.DrawLine(new Pen(Color.White), 0, j*48, this.Width, j*48);
+                horizonalline.DrawLine(new Pen(Color.White), 0, j* MESysData.MapChipSize, this.Width, j* MESysData.MapChipSize);
             }
 
-            for (int i = 0; i < this.Width / 48; i++)
+            for (int i = 0; i < this.Width / MESysData.MapChipSize; i++)
             {
-                verticalline.DrawLine(new Pen(Color.White), i * 48, 0, i * 48, this.Height);
+                verticalline.DrawLine(new Pen(Color.White), i * MESysData.MapChipSize, 0, i * MESysData.MapChipSize, this.Height);
             }
         }
 
         private void Left_button(object sender, EventArgs e)
         {
-            MapIndex--;
-            if (MapIndex < 0) MapIndex += 31;
-            mapName.Text = MapEditSystemData.pic_data[MapIndex % 31].name;
+            TilesIndex--;
+            if (TilesIndex < 0) TilesIndex += 31;
+            tilesName.Text = MESysData.pic_data[TilesIndex % 31].name;
             MapChip.Refresh();
         }
 
         private void Right_button(object sender, EventArgs e)
         {
-            MapIndex++;
-            mapName.Text = MapEditSystemData.pic_data[MapIndex % 31].name;
+            TilesIndex++;
+            tilesName.Text = MESysData.pic_data[TilesIndex % 31].name;
             MapChip.Refresh();
         }
 
@@ -249,7 +289,7 @@ namespace GottaniRPG
             sum.X = MapChip.PointToClient(Cursor.Position).X - MapChip.AutoScrollPosition.X;
             sum.Y = MapChip.PointToClient(Cursor.Position).Y - MapChip.AutoScrollPosition.Y;
             sum = ScreenToGrid_MapChipPanel(sum);
-            SelectedMapChip = MapEditSystemData.pic_data[MapIndex % 31].mapChipArray[4 * sum.X + sum.Y];
+            SelectedMapChip = MESysData.pic_data[TilesIndex % 31].mapChipArray[4 * sum.X + sum.Y];
         }
     }
 }

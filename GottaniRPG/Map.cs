@@ -10,8 +10,6 @@ namespace GottaniRPG
 {
     class Map
     {
-        private int pic_size_x = 48;
-        private int pic_size_y = 48;
         public string name;
         public Bitmap[] mapChipArray;
         public Map(int x, int y, string name)
@@ -27,10 +25,10 @@ namespace GottaniRPG
             {
                 for (int col = 0; col < x; col++)
                 {
-                    mapChipArray[x*row + col] = new Bitmap(pic_size_x, pic_size_y);
+                    mapChipArray[x*row + col] = new Bitmap(MESysData.MapChipSize, MESysData.MapChipSize);
                     Graphics graphics = Graphics.FromImage(mapChipArray[x * row + col]);
-                    graphics.DrawImage(large_map, new Rectangle(0, 0, pic_size_x, pic_size_y),
-                        new Rectangle(pic_size_x * (col), pic_size_y * (row), pic_size_x, pic_size_y), GraphicsUnit.Pixel);
+                    graphics.DrawImage(large_map, new Rectangle(0, 0, MESysData.MapChipSize, MESysData.MapChipSize),
+                        new Rectangle(MESysData.MapChipSize * (col), MESysData.MapChipSize * (row), MESysData.MapChipSize, MESysData.MapChipSize), GraphicsUnit.Pixel);
                 }
             }
         }
