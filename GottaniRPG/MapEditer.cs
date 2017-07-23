@@ -43,7 +43,7 @@ namespace GottaniRPG
             MESysData.LoadFile();
 
             Form_init();
-            this.DoubleBuffered = true;
+
             Load += new EventHandler(MenuBar);
           
             CreateUI();
@@ -69,7 +69,7 @@ namespace GottaniRPG
             Edit_or_UI.ColumnCount = 2;
             Edit_or_UI.RowCount = 1;
 
-            Edit = new Panel();
+            Edit = new EditPanel();
             Edit.Dock = DockStyle.Fill;
             Edit.BackColor = Color.FromArgb(0,0,0);
             Edit.Paint += new PaintEventHandler(DrawMap);
@@ -294,6 +294,14 @@ namespace GottaniRPG
             Point ret = new Point();
             ret.X = pos.X / 54;
             ret.Y = pos.Y / 54;
+            return ret;
+        }
+
+        public Point ScreenToGrid_EditMap(Point pos)
+        {
+            Point ret = new Point();
+            ret.X = pos.X / MESysData.MapChipSize;
+            ret.Y = pos.Y / MESysData.MapChipSize;
             return ret;
         }
 
