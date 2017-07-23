@@ -105,11 +105,11 @@ namespace GottaniRPG
             TilesName.ColumnCount = 3;
             TilesName.RowCount = 1;
             Button TilesName_left = new Button();
-            TilesName_left.Click += new EventHandler(Left_button);
+            TilesName_left.Click += new EventHandler(MapChipList_Left_button);
             tilesName = new Label();
             tilesName.Text = MESysData.pic_data[0].name;
             Button TilesName_right = new Button();
-            TilesName_right.Click += new EventHandler(Right_button);
+            TilesName_right.Click += new EventHandler(MapChipList_Right_button);
             TilesName_left.Parent = TilesName;
             tilesName.Parent = TilesName;
             TilesName_right.Parent = TilesName;
@@ -118,7 +118,7 @@ namespace GottaniRPG
             MapChip.Dock = DockStyle.Fill;
             MapChip.BackColor = Color.FromArgb(160, 160, 160);
             MapChip.AutoScroll = true;
-            MapChip.MouseClick += new MouseEventHandler(mouseClick);
+            MapChip.MouseClick += new MouseEventHandler(MapChipList_mouseClick);
             MapChip.Paint += new PaintEventHandler(PaintMapChipList);
 
             TilesName.Parent = UI;
@@ -294,7 +294,7 @@ namespace GottaniRPG
             }
         }
 
-        private void Left_button(object sender, EventArgs e)
+        private void MapChipList_Left_button(object sender, EventArgs e)
         {
             TilesIndex--;
             if (TilesIndex < 0) TilesIndex += 31;
@@ -302,7 +302,7 @@ namespace GottaniRPG
             MapChip.Refresh();
         }
 
-        private void Right_button(object sender, EventArgs e)
+        private void MapChipList_Right_button(object sender, EventArgs e)
         {
             TilesIndex++;
             tilesName.Text = MESysData.pic_data[TilesIndex % 31].name;
@@ -325,7 +325,7 @@ namespace GottaniRPG
             return ret;
         }
 
-        void mouseClick(object sender, MouseEventArgs e)
+        void MapChipList_mouseClick(object sender, MouseEventArgs e)
         {
             Point sum = new Point();
             sum.X = MapChip.PointToClient(Cursor.Position).X - MapChip.AutoScrollPosition.X;
