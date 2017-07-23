@@ -121,12 +121,14 @@ namespace GottaniRPG
             openmenuitem.Text = "開く(&O)";
             openmenuitem.ShortcutKeys = Keys.Control | Keys.O;
             openmenuitem.ShowShortcutKeys = true;
+            openmenuitem.Click += new EventHandler(OpenToolStripMenuItem_Click);
             filemenuitem.DropDownItems.Add(openmenuitem);
 
             ToolStripMenuItem savemenuitem = new ToolStripMenuItem();
             savemenuitem.Text = "名前を付けて保存(&N)";
             savemenuitem.ShortcutKeys = Keys.Control | Keys.N;
             savemenuitem.ShowShortcutKeys = true;
+            savemenuitem.Click += new EventHandler(SaveToolStripMenuItem_Click);
             filemenuitem.DropDownItems.Add(savemenuitem);
 
             ToolStripMenuItem exitmenuitem = new ToolStripMenuItem();
@@ -142,6 +144,30 @@ namespace GottaniRPG
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+
+            if(ofd.ShowDialog() == DialogResult.OK)
+            {
+                Console.WriteLine(ofd.FileName);
+            }
+
+            ofd.Dispose();
+        }
+
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                Console.WriteLine(sfd.FileName);
+            }
+
+            sfd.Dispose();
         }
 
         private void AddColumnStyles(TableLayoutPanel tlp, int num, int[] per)
