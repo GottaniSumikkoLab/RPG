@@ -26,7 +26,7 @@ namespace GottaniRPG
 
         private MenuStrip menustrip;
 
-        private Bitmap SelectedMapChip;
+        private SelectedMapChip selectedMapChip;
 
         public int MapSizeX = 0;
         public int MapSizeY = 0;
@@ -188,7 +188,7 @@ namespace GottaniRPG
                 {
                     MapSizeX = s;
                     MapSizeY = t;
-
+                    EditMapArray = new MapChipData[MapSizeX,MapSizeY];
                     for(int i = 0; i < MapSizeX; i++)
                     {
                         for(int j = 0; j < MapSizeY; j++)
@@ -331,7 +331,9 @@ namespace GottaniRPG
             sum.X = MapChip.PointToClient(Cursor.Position).X - MapChip.AutoScrollPosition.X;
             sum.Y = MapChip.PointToClient(Cursor.Position).Y - MapChip.AutoScrollPosition.Y;
             sum = ScreenToGrid_MapChipPanel(sum);
-            SelectedMapChip = MESysData.pic_data[TilesIndex % 31].mapChipArray[sum.X + 4 * sum.Y];
+            selectedMapChip = new SelectedMapChip(MESysData.pic_data[TilesIndex % 31].mapChipArray[sum.X + 4 * sum.Y],
+                                                  MESysData.pic_data[TilesIndex % 31].name,
+                                                  sum.X + 4 * sum.Y);
         }
 
         private void EditMap_MouseDown(object sender, MouseEventArgs e)
@@ -367,11 +369,11 @@ namespace GottaniRPG
             tmp.Y = EditMapWorldPos.Y + Edit.PointToClient(Cursor.Position).Y;
             tmp = ScreenToGrid_EditMap(tmp);
             Graphics g = Graphics.FromImage(EditMap);
-            g.DrawImage(SelectedMapChip, tmp.X*MESysData.MapChipSize, tmp.Y*MESysData.MapChipSize);
+            g.DrawImage(selectedMapChip.MapChip, tmp.X*MESysData.MapChipSize, tmp.Y*MESysData.MapChipSize);
             Edit.Refresh();
             g.Dispose();
 
-            EditMapArray[tmp.X, tmp.Y] = 
+            EditMapArray[tmp.X, tmp.Y] = new MapChipData(selectedMapChip.tileset_name, selectedMapChip.MapChip_index);
         }
     }
 }
