@@ -159,8 +159,10 @@ namespace GottaniRPG
         private void CreateMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CreateMapDialog f = new CreateMapDialog();
+            int s;
+            int t;
             if (f.ShowDialog(this) == DialogResult.OK) {
-                if (int.TryParse(f.tate.Text,out int s) && int.TryParse(f.yoko.Text, out int t))
+                if (int.TryParse(f.tate.Text, out s) && int.TryParse(f.yoko.Text, out t))
                 {
                     MapSizeX = s;
                     MapSizeY = t;
