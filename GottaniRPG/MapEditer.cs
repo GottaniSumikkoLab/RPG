@@ -32,7 +32,19 @@ namespace GottaniRPG
         public int MapSizeY = 0;
 
         public Bitmap EditMap = new Bitmap(300, 300);
-        public int[,] EditMapArray;
+
+        public struct MapChipData
+        {
+            public string tileset_name;
+            public int mapChip_index;
+
+            public MapChipData(string x, int y)
+            {
+                tileset_name = x;
+                mapChip_index = y;
+            }
+        }
+        public MapChipData[,] EditMapArray;
 
         private bool EditMapMoveFlag;
         private Point FormerMousePos = new Point(0, 0);
@@ -76,6 +88,7 @@ namespace GottaniRPG
             Edit.MouseDown += new MouseEventHandler(EditMap_MouseDown);
             Edit.MouseMove += new MouseEventHandler(EditMap_MouseMove);
             Edit.MouseUp += new MouseEventHandler(EditMap_MouseUp);
+            Edit.MouseClick += new MouseEventHandler(EditMap_MouseClick);
             
 
             UI = new TableLayoutPanel();
@@ -176,7 +189,14 @@ namespace GottaniRPG
                     MapSizeX = s;
                     MapSizeY = t;
 
-                    EditMapArray = new int[MapSizeX, MapSizeY];
+                    for(int i = 0; i < MapSizeX; i++)
+                    {
+                        for(int j = 0; j < MapSizeY; j++)
+                        {
+                            EditMapArray[i, j] = new MapChipData("",-1);
+                        }
+                    }
+                    
                     EditMap = new Bitmap(MapSizeX * MESysData.MapChipSize, MapSizeY * MESysData.MapChipSize);
                     GridLine(EditMap);
                     Edit.Invalidate();
@@ -311,14 +331,14 @@ namespace GottaniRPG
             sum.X = MapChip.PointToClient(Cursor.Position).X - MapChip.AutoScrollPosition.X;
             sum.Y = MapChip.PointToClient(Cursor.Position).Y - MapChip.AutoScrollPosition.Y;
             sum = ScreenToGrid_MapChipPanel(sum);
-            SelectedMapChip = MESysData.pic_data[TilesIndex % 31].mapChipArray[4 * sum.X + sum.Y];
+            SelectedMapChip = MESysData.pic_data[TilesIndex % 31].mapChipArray[sum.X + 4 * sum.Y];
         }
 
         private void EditMap_MouseDown(object sender, MouseEventArgs e)
         {
             EditMapMoveFlag = true;
 
-            FormerMousePos = Cursor.Position;
+            FormerMousePos = Edit.PointToClient(Cursor.Position);
         }
 
         private void EditMap_MouseMove(object sender, MouseEventArgs e)
@@ -340,6 +360,18 @@ namespace GottaniRPG
             EditMapMoveFlag = false;
         }
 
-        
+        private void EditMap_MouseClick(object sender, MouseEventArgs e)
+        {
+            Point tmp = new Point();
+            tmp.X = EditMapWorldPos.X + Edit.PointToClient(Cursor.Position).X;
+            tmp.Y = EditMapWorldPos.Y + Edit.PointToClient(Cursor.Position).Y;
+            tmp = ScreenToGrid_EditMap(tmp);
+            Graphics g = Graphics.FromImage(EditMap);
+            g.DrawImage(SelectedMapChip, tmp.X*MESysData.MapChipSize, tmp.Y*MESysData.MapChipSize);
+            Edit.Refresh();
+            g.Dispose();
+
+            EditMapArray[tmp.X, tmp.Y] = 
+        }
     }
 }
