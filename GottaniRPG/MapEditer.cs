@@ -30,8 +30,6 @@ namespace GottaniRPG
 
         public int MapSizeX = 0;
         public int MapSizeY = 0;
-        public int layer = 3;
-        public int[,] layercnt = new int[256,256];
 
         public Bitmap EditMap = new Bitmap(300, 300);
 
@@ -46,12 +44,13 @@ namespace GottaniRPG
                 mapChip_index = y;
             }
         }
+        public MapChipData[,] EditMapArray;
 
-        public MapChipData[,,] EditMapArray;
-
-        private bool EditMapMoveFlag;
+        private bool EditMapMoveFlag = false;
+        private bool MouseMoveFlag = false;
         private Point FormerMousePos = new Point(0, 0);
         private Point EditMapWorldPos = new Point(0, 0);
+
 
         public MapEditer()
         {
@@ -91,7 +90,6 @@ namespace GottaniRPG
             Edit.MouseDown += new MouseEventHandler(EditMap_MouseDown);
             Edit.MouseMove += new MouseEventHandler(EditMap_MouseMove);
             Edit.MouseUp += new MouseEventHandler(EditMap_MouseUp);
-            Edit.MouseClick += new MouseEventHandler(EditMap_MouseClick);
             
 
             UI = new TableLayoutPanel();
@@ -191,18 +189,14 @@ namespace GottaniRPG
                 {
                     MapSizeX = s;
                     MapSizeY = t;
-                    EditMapArray = new MapChipData[MapSizeX,MapSizeY,layer];
-
+                    EditMapArray = new MapChipData[MapSizeX,MapSizeY];
                     for(int i = 0; i < MapSizeX; i++)
                     {
                         for(int j = 0; j < MapSizeY; j++)
                         {
-                            for(int k = 0; k < layer; k++)
-                            {
-                                EditMapArray[i, j, k] = new MapChipData("", -1);
-                            }//k
-                        }//j
-                    }//i
+                            EditMapArray[i, j] = new MapChipData("",-1);
+                        }
+                    }
                     
                     EditMap = new Bitmap(MapSizeX * MESysData.MapChipSize, MapSizeY * MESysData.MapChipSize);
                     GridLine(EditMap);
@@ -235,29 +229,9 @@ namespace GottaniRPG
         {
             SaveFileDialog sfd = new SaveFileDialog();
 
-            sfd.FileName = "newdata.txt";
-
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                System.IO.Stream mapchipfile;
-                mapchipfile = sfd.OpenFile();
-                if(mapchipfile != null)
-                {
-                    System.IO.StreamWriter sw = new System.IO.StreamWriter(mapchipfile);
-
-                    for(int i = 0; i < MapSizeY; i++)
-                    {
-                        for(int j=0;j< MapSizeX; j++)
-                        {
-                            for(int k = 0; k < layer; k++)
-                            {
-                                sw.WriteLine(EditMapArray[i, j, k].tileset_name + ","
-                                    + EditMapArray[j, i, k].mapChip_index + "," + j + "," + i + "," + k);
-                            }//k
-                        }//j
-                    }//i
-                }
-
+                Console.WriteLine(sfd.FileName);
             }
 
             sfd.Dispose();
@@ -365,9 +339,19 @@ namespace GottaniRPG
 
         private void EditMap_MouseDown(object sender, MouseEventArgs e)
         {
-            EditMapMoveFlag = true;
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    EditMapMoveFlag = true;
+                    break;
+                case MouseButtons.Right:
+                    MouseMoveFlag = true;
+                    DrawMapChip();
+                    break;
+            }
 
             FormerMousePos = Edit.PointToClient(Cursor.Position);
+            
         }
 
         private void EditMap_MouseMove(object sender, MouseEventArgs e)
@@ -382,35 +366,32 @@ namespace GottaniRPG
                 FormerMousePos.X = e.X;
                 FormerMousePos.Y = e.Y;
             }
+
+            if (MouseMoveFlag)
+            {
+                DrawMapChip();
+            }
+
         }
 
         private void EditMap_MouseUp(object sender, MouseEventArgs e)
         {
             EditMapMoveFlag = false;
+            MouseMoveFlag = false;
         }
 
-        private void EditMap_MouseClick(object sender, MouseEventArgs e)
+        private void DrawMapChip()
         {
             Point tmp = new Point();
             tmp.X = EditMapWorldPos.X + Edit.PointToClient(Cursor.Position).X;
             tmp.Y = EditMapWorldPos.Y + Edit.PointToClient(Cursor.Position).Y;
             tmp = ScreenToGrid_EditMap(tmp);
-            if (layercnt[tmp.X, tmp.Y] >= 3)
-            {
-                MessageBox.Show("レイヤー上限です。",
-                                   "エラー",
-                                   MessageBoxButtons.OK,
-                                   MessageBoxIcon.Error);
-            }
-            else {
-                Graphics g = Graphics.FromImage(EditMap);
-                g.DrawImage(selectedMapChip.MapChip, tmp.X * MESysData.MapChipSize, tmp.Y * MESysData.MapChipSize);
-                Edit.Refresh();
-                g.Dispose();
+            Graphics g = Graphics.FromImage(EditMap);
+            g.DrawImage(selectedMapChip.MapChip, tmp.X * MESysData.MapChipSize, tmp.Y * MESysData.MapChipSize);
+            Edit.Refresh();
+            g.Dispose();
 
-                EditMapArray[tmp.X, tmp.Y, layercnt[tmp.X, tmp.Y]] = new MapChipData(selectedMapChip.tileset_name, selectedMapChip.MapChip_index);
-                layercnt[tmp.X, tmp.Y] += 1;
-            }
+            EditMapArray[tmp.X, tmp.Y] = new MapChipData(selectedMapChip.tileset_name, selectedMapChip.MapChip_index);
         }
     }
 }
