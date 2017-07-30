@@ -224,11 +224,46 @@ namespace GottaniRPG
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
+            ofd.FileName = "";
 
             if(ofd.ShowDialog() == DialogResult.OK)
             {
-                Console.WriteLine(ofd.FileName);
-            }
+                System.IO.StreamReader LoadStream = new System.IO.StreamReader(ofd.FileName);
+
+                string Loadline;
+                string[] DataSplit;
+                int Load_X = 0;
+                int Load_Y = 0;
+                int Load_Layer = 0;
+                int Load_Index = 0;
+
+                while (!LoadStream.EndOfStream)
+                {
+                    Loadline = LoadStream.ReadLine();
+                    DataSplit = Loadline.Split(',');
+                    MapSizeX = int.Parse(DataSplit[2])+1;
+                    MapSizeY = int.Parse(DataSplit[3])+1;
+                   
+                }//while
+                LoadStream.Close();
+
+                LoadStream = new System.IO.StreamReader(ofd.FileName);
+                EditMapArray = new MapChipData[MapSizeX, MapSizeY, MapLayer];
+
+                while (!LoadStream.EndOfStream)
+                {
+                    Loadline = LoadStream.ReadLine();
+                    DataSplit = Loadline.Split(',');
+                    Load_Index = int.Parse(DataSplit[1]);
+                    Load_X = int.Parse(DataSplit[2]);
+                    Load_Y = int.Parse(DataSplit[3]);
+                    Load_Layer = int.Parse(DataSplit[4]);
+
+                    EditMapArray[Load_X, Load_Y, Load_Layer] = new MapChipData(DataSplit[0], Load_Index);
+                }//while
+                LoadStream.Close();
+              
+            }//if Dialog
 
             ofd.Dispose();
         }
@@ -240,18 +275,18 @@ namespace GottaniRPG
 
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                System.IO.StreamWriter nf = new System.IO.StreamWriter(sfd.FileName);
+                System.IO.StreamWriter NewFile = new System.IO.StreamWriter(sfd.FileName);
                 for (int i = 0; i < MapSizeX; i++)
                 {
                     for (int j = 0; j < MapSizeY; j++)
                     {
                         for (int k = 0; k < MapLayer; k++)
                         {
-                            nf.WriteLine(EditMapArray[i, j, k].tileset_name +","+ EditMapArray[i, j, k].mapChip_index +","+ i + "," + j + "," + k);
+                            NewFile.WriteLine(EditMapArray[i, j, k].tileset_name +","+ EditMapArray[i, j, k].mapChip_index +","+ i + "," + j + "," + k);
                         }//k
                     }//j
                 }//i
-                nf.Close();
+                NewFile.Close();
             }//if
             sfd.Dispose();
         }
