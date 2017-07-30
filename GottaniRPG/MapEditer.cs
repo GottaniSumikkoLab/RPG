@@ -282,11 +282,11 @@ namespace GottaniRPG
         {
             e.Graphics.TranslateTransform(MapChip.AutoScrollPosition.X, MapChip.AutoScrollPosition.Y);
             Graphics g = e.Graphics;
-            for (int i = 0; i < MESysData.pic_data[TilesIndex % 31].mapChipArray.Length; i++)
+            for (int i = 0; i < MESysData.pic_data[TilesIndex % MESysData.pic_num].mapChipArray.Length; i++)
             {
-                g.DrawImage(MESysData.pic_data[TilesIndex % 31].mapChipArray[i], new PointF(3 + (54f * (i % 4)), 3 + (54f * (i / 4))));
+                g.DrawImage(MESysData.pic_data[TilesIndex % MESysData.pic_num].mapChipArray[i], new PointF(3 + (54f * (i % 4)), 3 + (54f * (i / 4))));
             }
-            int rows = MESysData.pic_data[TilesIndex % 31].mapChipArray.Count(n => n != null) / 4;
+            int rows = MESysData.pic_data[TilesIndex % MESysData.pic_num].mapChipArray.Count(n => n != null) / 4;
             MapChip.AutoScrollMinSize = new Size(MapChip.Width, 54 * rows + 3);
         }
 
@@ -317,15 +317,15 @@ namespace GottaniRPG
         private void MapChipList_Left_button(object sender, EventArgs e)
         {
             TilesIndex--;
-            if (TilesIndex < 0) TilesIndex += 31;
-            tilesName.Text = MESysData.pic_data[TilesIndex % 31].name;
+            if (TilesIndex < 0) TilesIndex += MESysData.pic_num;
+            tilesName.Text = MESysData.pic_data[TilesIndex % MESysData.pic_num].name;
             MapChip.Refresh();
         }
 
         private void MapChipList_Right_button(object sender, EventArgs e)
         {
             TilesIndex++;
-            tilesName.Text = MESysData.pic_data[TilesIndex % 31].name;
+            tilesName.Text = MESysData.pic_data[TilesIndex % MESysData.pic_num].name;
             MapChip.Refresh();
         }
 
@@ -351,8 +351,8 @@ namespace GottaniRPG
             sum.X = MapChip.PointToClient(Cursor.Position).X - MapChip.AutoScrollPosition.X;
             sum.Y = MapChip.PointToClient(Cursor.Position).Y - MapChip.AutoScrollPosition.Y;
             sum = ScreenToGrid_MapChipPanel(sum);
-            selectedMapChip = new SelectedMapChip(MESysData.pic_data[TilesIndex % 31].mapChipArray[sum.X + 4 * sum.Y],
-                                                  MESysData.pic_data[TilesIndex % 31].name,
+            selectedMapChip = new SelectedMapChip(MESysData.pic_data[TilesIndex % MESysData.pic_num].mapChipArray[sum.X + 4 * sum.Y],
+                                                  MESysData.pic_data[TilesIndex % MESysData.pic_num].name,
                                                   sum.X + 4 * sum.Y);
         }
 
@@ -406,7 +406,7 @@ namespace GottaniRPG
             tmp.X = EditMapWorldPos.X + Edit.PointToClient(Cursor.Position).X;
             tmp.Y = EditMapWorldPos.Y + Edit.PointToClient(Cursor.Position).Y;
             tmp = ScreenToGrid_EditMap(tmp);
-            if (Layercnt[tmp.X,tmp.Y] >= 3)
+            if (Layercnt[tmp.X,tmp.Y] >= MapLayer)
             {
                 MessageBox.Show("レイヤー上限です。",
                                     "エラー",
